@@ -1,0 +1,16 @@
+{
+  "uuid": "1ef04d2f-323d-4874-bada-21ad51d778a7",
+  "shortName": "MIPS",
+  "longName": "MIPS",
+  "companyName": "Lukas Werling",
+  "versionCode": 1,
+  "versionLabel": "0.1.0",
+  "watchapp": {
+    "watchface": true
+  },
+  "appKeys": {},
+  "resources": {
+    "media": [
+    ]
+  }
+}
