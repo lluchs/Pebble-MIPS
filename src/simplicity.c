@@ -1,7 +1,8 @@
 #include "pebble.h"
 
 Window *window;
-TextLayer *text_date_layer;
+TextLayer *text_mips_layer;
+TextLayer *text_desc_layer;
 TextLayer *text_time_layer;
 Layer *line_layer;
 
@@ -13,15 +14,8 @@ void line_layer_update_callback(Layer *layer, GContext* ctx) {
 void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
   // Need to be static because they're used by the system later.
   static char time_text[] = "00:00";
-  static char date_text[] = "Xxxxxxxxx 00";
 
   char *time_format;
-
-
-  // TODO: Only update the date when it's changed.
-  strftime(date_text, sizeof(date_text), "%B %e", tick_time);
-  text_layer_set_text(text_date_layer, date_text);
-
 
   if (clock_is_24h_style()) {
     time_format = "%R";
@@ -51,11 +45,21 @@ void handle_init(void) {
 
   Layer *window_layer = window_get_root_layer(window);
 
-  text_date_layer = text_layer_create(GRect(8, 68, 144-8, 168-68));
-  text_layer_set_text_color(text_date_layer, GColorWhite);
-  text_layer_set_background_color(text_date_layer, GColorClear);
-  text_layer_set_font(text_date_layer, fonts_get_system_font(FONT_KEY_ROBOTO_CONDENSED_21));
-  layer_add_child(window_layer, text_layer_get_layer(text_date_layer));
+  text_mips_layer = text_layer_create(GRect(8, 0, 144-8, 50));
+  text_layer_set_text_color(text_mips_layer, GColorWhite);
+  text_layer_set_background_color(text_mips_layer, GColorClear);
+  text_layer_set_overflow_mode(text_mips_layer, GTextOverflowModeFill);
+  text_layer_set_text(text_mips_layer, "abs Rdest, Rsrc, address");
+  text_layer_set_font(text_mips_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
+  layer_add_child(window_layer, text_layer_get_layer(text_mips_layer));
+
+  text_desc_layer = text_layer_create(GRect(8, 50, 144-8, 50));
+  text_layer_set_text_color(text_desc_layer, GColorWhite);
+  text_layer_set_background_color(text_desc_layer, GColorClear);
+  text_layer_set_overflow_mode(text_desc_layer, GTextOverflowModeFill);
+  text_layer_set_text(text_desc_layer, "Absolute Value and a long text †");
+  text_layer_set_font(text_desc_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
+  layer_add_child(window_layer, text_layer_get_layer(text_desc_layer));
 
   text_time_layer = text_layer_create(GRect(7, 92, 144-7, 168-92));
   text_layer_set_text_color(text_time_layer, GColorWhite);
