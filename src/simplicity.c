@@ -1,4 +1,5 @@
 #include "pebble.h"
+#include "instructions.h"
 
 Window *window;
 TextLayer *text_mips_layer;
@@ -9,6 +10,13 @@ Layer *line_layer;
 void line_layer_update_callback(Layer *layer, GContext* ctx) {
   graphics_context_set_fill_color(ctx, GColorWhite);
   graphics_fill_rect(ctx, layer_get_bounds(layer), 0, GCornerNone);
+}
+
+void update_instruction() {
+  char **instruction = instructions[rand() % INSTR_NUM];
+
+  text_layer_set_text(text_mips_layer, instruction[0]);
+  text_layer_set_text(text_desc_layer, instruction[1]);
 }
 
 void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
@@ -32,6 +40,8 @@ void handle_minute_tick(struct tm *tick_time, TimeUnits units_changed) {
   }
 
   text_layer_set_text(text_time_layer, time_text);
+  
+  update_instruction();
 }
 
 void handle_deinit(void) {
@@ -49,7 +59,6 @@ void handle_init(void) {
   text_layer_set_text_color(text_mips_layer, GColorWhite);
   text_layer_set_background_color(text_mips_layer, GColorClear);
   text_layer_set_overflow_mode(text_mips_layer, GTextOverflowModeFill);
-  text_layer_set_text(text_mips_layer, "abs Rdest, Rsrc, address");
   text_layer_set_font(text_mips_layer, fonts_get_system_font(FONT_KEY_GOTHIC_24_BOLD));
   layer_add_child(window_layer, text_layer_get_layer(text_mips_layer));
 
@@ -57,7 +66,6 @@ void handle_init(void) {
   text_layer_set_text_color(text_desc_layer, GColorWhite);
   text_layer_set_background_color(text_desc_layer, GColorClear);
   text_layer_set_overflow_mode(text_desc_layer, GTextOverflowModeFill);
-  text_layer_set_text(text_desc_layer, "Absolute Value and a long text †");
   text_layer_set_font(text_desc_layer, fonts_get_system_font(FONT_KEY_GOTHIC_18));
   layer_add_child(window_layer, text_layer_get_layer(text_desc_layer));
 
@@ -78,6 +86,9 @@ void handle_init(void) {
 
 
 int main(void) {
+  // Seed random number generator.
+  srand(time(NULL));
+
   handle_init();
 
   app_event_loop();
